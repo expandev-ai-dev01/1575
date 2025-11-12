@@ -1,2 +1,1 @@
-// Service exports will be added here as features are implemented
-export {};
+export * from './task';

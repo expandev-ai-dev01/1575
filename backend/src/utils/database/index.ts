@@ -7,11 +7,6 @@ export enum ExpectedReturn {
   None = 'none',
 }
 
-export interface IRecordSet<T = any> {
-  recordset: T[];
-  rowsAffected: number[];
-}
-
 let pool: sql.ConnectionPool | null = null;
 
 export async function getPool(): Promise<sql.ConnectionPool> {
@@ -64,7 +59,10 @@ export async function dbRequest(
     if (resultSetNames && resultSetNames.length > 0) {
       const namedResults: { [key: string]: any[] } = {};
       resultSetNames.forEach((name, index) => {
-        namedResults[name] = result.recordsets[index] || [];
+        const recordset = Array.isArray(result.recordsets)
+          ? result.recordsets[index]
+          : result.recordsets[name];
+        namedResults[name] = recordset || [];
       });
       return namedResults;
     }
